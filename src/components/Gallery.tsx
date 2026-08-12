@@ -13,8 +13,8 @@ const photos = [
   { src: pizza2, alt: "Pizza com recheio generoso", tag: "Cardápio", span: "" },
   { src: bastidores, alt: "Preparo artesanal da massa", tag: "Bastidores", span: "" },
   { src: clientes, alt: "Clientes aproveitando a pizza em casa", tag: "Clientes", span: "" },
-  { src: pizza3, alt: "Pizza de queijo dourado", tag: "Cardápio", span: "" },
-  { src: pizza4, alt: "Pizza doce com morango", tag: "Cardápio", span: "" },
+  { src: pizza3, alt: "Pizza de queijo dourado", tag: "Cardápio", span: "sm:col-span-2" },
+  { src: pizza4, alt: "Pizza doce com morango", tag: "Cardápio", span: "sm:col-span-2" },
 ];
 
 export function Gallery() {

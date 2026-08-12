@@ -2,6 +2,9 @@ import pizza1 from "@/assets/pizza-1.jpg";
 import pizza2 from "@/assets/pizza-2.jpg";
 import pizza3 from "@/assets/pizza-3.jpg";
 import pizza4 from "@/assets/pizza-4.jpg";
+import bebidaCoca from "@/assets/bebida-coca.jpg";
+import bebidaGuarana from "@/assets/bebida-guarana.jpg";
+import bebidaSuco from "@/assets/bebida-suco.jpg";
 
 export type MenuItem = {
   id: string;
@@ -103,24 +106,24 @@ export const MENU: MenuCategory[] = [
     items: [
       {
         id: "b1",
-        name: "[Bebida] — [Tamanho]",
-        description: "[Descrição curta da bebida]",
-        price: "R$ [00,00]",
-        image: pizza1,
+        name: "Coca-Cola 2L",
+        description: "Refrigerante gelado, perfeito para acompanhar a pizza.",
+        price: "R$ 12,00",
+        image: bebidaCoca,
       },
       {
         id: "b2",
-        name: "[Bebida] — [Tamanho]",
-        description: "[Descrição curta da bebida]",
-        price: "R$ [00,00]",
-        image: pizza3,
+        name: "Guaraná Antarctica 2L",
+        description: "Refrigerante brasileiro gelado, sabor autêntico.",
+        price: "R$ 11,00",
+        image: bebidaGuarana,
       },
       {
         id: "b3",
-        name: "[Bebida] — [Tamanho]",
-        description: "[Descrição curta da bebida]",
-        price: "R$ [00,00]",
-        image: pizza2,
+        name: "Suco Natural de Laranja 500ml",
+        description: "Suco natural e refrescante, feito na hora.",
+        price: "R$ 9,00",
+        image: bebidaSuco,
       },
     ],
   },
