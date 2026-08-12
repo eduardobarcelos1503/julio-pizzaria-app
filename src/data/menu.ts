@@ -2,6 +2,9 @@ import pizza1 from "@/assets/pizza-1.jpg";
 import pizza2 from "@/assets/pizza-2.jpg";
 import pizza3 from "@/assets/pizza-3.jpg";
 import pizza4 from "@/assets/pizza-4.jpg";
+import bebidaCoca from "@/assets/bebida-coca.jpg";
+import bebidaGuarana from "@/assets/bebida-guarana.jpg";
+import bebidaSuco from "@/assets/bebida-suco.jpg";
 
 export type MenuItem = {
   id: string;
