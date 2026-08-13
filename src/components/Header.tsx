@@ -18,6 +18,8 @@ const links = [
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { count, total, setOpen: setCartOpen } = useCart();
+
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
