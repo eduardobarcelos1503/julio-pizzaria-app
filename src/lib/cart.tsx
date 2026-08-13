@@ -7,7 +7,7 @@ export type CartItem = {
   name: string;
   /** Linhas de personalização (tamanho, sabores, borda) */
   details: string[];
-  note?: string;
+  note?: string | undefined;
   unitPrice: number;
   qty: number;
 };
