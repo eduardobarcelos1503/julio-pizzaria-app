@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
-import { Menu, X, Pizza } from "lucide-react";
+import { Menu, X, Pizza, ShoppingBag } from "lucide-react";
 import { CtaLink } from "./CtaLink";
 import { WA_GENERAL } from "@/lib/pizzaria";
+import { useCart } from "@/lib/cart";
+import { formatBRL } from "@/data/menu";
 import { cn } from "@/lib/utils";
+
 
 const links = [
   { href: "#inicio", label: "Início" },
