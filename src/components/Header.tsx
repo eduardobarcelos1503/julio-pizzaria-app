@@ -37,9 +37,13 @@ export function Header() {
     >
       <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:px-6 lg:py-4">
         <a href="#inicio" className="flex min-w-0 items-center gap-2.5">
+          {/* ESPAÇO RESERVADO PARA A LOGO OFICIAL:
+              anexe a arte no chat e troque este bloco por
+              <img src={logo} alt="Julio Pizzaria" className="h-11 w-11 rounded-full object-contain" /> */}
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-ember shadow-soft">
             <Pizza className="h-5 w-5 text-primary-foreground" strokeWidth={2.2} />
           </span>
+
           <span className="min-w-0">
             <span className="block truncate font-display text-lg font-extrabold leading-none text-cream">
               Julio Pizzaria
