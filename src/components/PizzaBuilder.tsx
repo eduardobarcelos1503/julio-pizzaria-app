@@ -10,6 +10,13 @@ import {
 import { useCart } from "@/lib/cart";
 import { cn } from "@/lib/utils";
 
+const CART_LABEL: Record<PizzaCategory["id"], string> = {
+  tradicional: "Pizza Tradicional",
+  promocional: "Pizza Promocional",
+  doce: "Pizza Doce",
+  premium: "Pizza Premium (até 4 sabores)",
+};
+
 type Props = {
   open: boolean;
   onOpenChange: (v: boolean) => void;
@@ -98,7 +105,7 @@ export function PizzaBuilder({ open, onOpenChange, initialCategoryId }: Props) {
   const handleAdd = () => {
     if (flavors.length === 0) return;
     add({
-      name: `${category.label.replace("Pizzas ", "Pizza ")} — ${flavorNames.join(" / ")}`,
+      name: `${CART_LABEL[category.id]} — ${flavorNames.join(" / ")}`,
       details: [
         `Tamanho: ${size.label} (${size.slices})`,
         `Sabores: ${flavorNames.join(", ")}`,
