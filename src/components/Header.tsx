@@ -71,6 +71,23 @@ export function Header() {
           </CtaLink>
           <button
             type="button"
+            onClick={() => setCartOpen(true)}
+            aria-label={`Abrir carrinho (${count} itens)`}
+            className="relative inline-flex h-10 items-center gap-2 rounded-full border border-cream/25 px-3 text-sm font-semibold text-cream transition-colors hover:bg-cream/10"
+          >
+            <ShoppingBag className="h-4 w-4" />
+            {count > 0 && (
+              <>
+                <span className="hidden sm:inline">{formatBRL(total)}</span>
+                <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-[0.65rem] font-bold text-primary-foreground">
+                  {count}
+                </span>
+              </>
+            )}
+          </button>
+
+          <button
+            type="button"
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Fechar menu" : "Abrir menu"}
             aria-expanded={open}
