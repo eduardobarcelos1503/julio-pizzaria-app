@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
-import { Menu, X, Pizza } from "lucide-react";
+import { Menu, X, Pizza, ShoppingBag } from "lucide-react";
 import { CtaLink } from "./CtaLink";
 import { WA_GENERAL } from "@/lib/pizzaria";
+import { useCart } from "@/lib/cart";
+import { formatBRL } from "@/data/menu";
 import { cn } from "@/lib/utils";
+
 
 const links = [
   { href: "#inicio", label: "Início" },
@@ -15,6 +18,8 @@ const links = [
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { count, total, setOpen: setCartOpen } = useCart();
+
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -32,9 +37,13 @@ export function Header() {
     >
       <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:px-6 lg:py-4">
         <a href="#inicio" className="flex min-w-0 items-center gap-2.5">
+          {/* ESPAÇO RESERVADO PARA A LOGO OFICIAL:
+              anexe a arte no chat e troque este bloco por
+              <img src={logo} alt="Julio Pizzaria" className="h-11 w-11 rounded-full object-contain" /> */}
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-ember shadow-soft">
             <Pizza className="h-5 w-5 text-primary-foreground" strokeWidth={2.2} />
           </span>
+
           <span className="min-w-0">
             <span className="block truncate font-display text-lg font-extrabold leading-none text-cream">
               Julio Pizzaria
@@ -60,6 +69,23 @@ export function Header() {
           <CtaLink href={WA_GENERAL} size="sm" className="hidden md:inline-flex">
             🍕 Pedir pelo WhatsApp
           </CtaLink>
+          <button
+            type="button"
+            onClick={() => setCartOpen(true)}
+            aria-label={`Abrir carrinho (${count} itens)`}
+            className="relative inline-flex h-10 items-center gap-2 rounded-full border border-cream/25 px-3 text-sm font-semibold text-cream transition-colors hover:bg-cream/10"
+          >
+            <ShoppingBag className="h-4 w-4" />
+            {count > 0 && (
+              <>
+                <span className="hidden sm:inline">{formatBRL(total)}</span>
+                <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-[0.65rem] font-bold text-primary-foreground">
+                  {count}
+                </span>
+              </>
+            )}
+          </button>
+
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}

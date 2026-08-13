@@ -11,7 +11,10 @@ import { Localizacao } from "@/components/Localizacao";
 import { FinalCta } from "@/components/FinalCta";
 import { Footer } from "@/components/Footer";
 import { MobileOrderBar } from "@/components/MobileOrderBar";
+import { CartDrawer } from "@/components/CartDrawer";
+import { CartProvider } from "@/lib/cart";
 import { BUSINESS } from "@/lib/pizzaria";
+
 
 const title = "Julio Pizzaria — Delivery de Pizza em São José dos Pinhais";
 const description =
@@ -95,21 +98,25 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main>
-        <Hero />
-        <Highlights />
-        <MenuSection />
-        <Diferenciais />
-        <Reviews />
-        <Gallery />
-        <Sobre />
-        <Localizacao />
-        <FinalCta />
-      </main>
-      <Footer />
-      <MobileOrderBar />
-    </div>
+    <CartProvider>
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main>
+          <Hero />
+          <Highlights />
+          <MenuSection />
+          <Diferenciais />
+          <Reviews />
+          <Gallery />
+          <Sobre />
+          <Localizacao />
+          <FinalCta />
+        </main>
+        <Footer />
+        <MobileOrderBar />
+        <CartDrawer />
+      </div>
+    </CartProvider>
   );
 }
+
