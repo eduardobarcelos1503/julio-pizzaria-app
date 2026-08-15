@@ -98,6 +98,39 @@ export type Database = {
         }
         Relationships: []
       }
+      delivery_cache: {
+        Row: {
+          created_at: string
+          dest_hash: string
+          distance_km: number
+          duration_min: number
+          expires_at: string
+          fee: number
+          id: string
+          origin_hash: string
+        }
+        Insert: {
+          created_at?: string
+          dest_hash: string
+          distance_km: number
+          duration_min: number
+          expires_at?: string
+          fee: number
+          id?: string
+          origin_hash: string
+        }
+        Update: {
+          created_at?: string
+          dest_hash?: string
+          distance_km?: number
+          duration_min?: number
+          expires_at?: string
+          fee?: number
+          id?: string
+          origin_hash?: string
+        }
+        Relationships: []
+      }
       delivery_settings: {
         Row: {
           base_fee: number
@@ -179,6 +212,33 @@ export type Database = {
           price?: number
           sort?: number
           updated_at?: string
+        }
+        Relationships: []
+      }
+      geocode_cache: {
+        Row: {
+          address_hash: string
+          created_at: string
+          expires_at: string
+          lat: number
+          lon: number
+          place_name: string
+        }
+        Insert: {
+          address_hash: string
+          created_at?: string
+          expires_at?: string
+          lat: number
+          lon: number
+          place_name?: string
+        }
+        Update: {
+          address_hash?: string
+          created_at?: string
+          expires_at?: string
+          lat?: number
+          lon?: number
+          place_name?: string
         }
         Relationships: []
       }
@@ -278,6 +338,27 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limits: {
+        Row: {
+          count: number
+          key: string
+          updated_at: string
+          window_start: string
+        }
+        Insert: {
+          count?: number
+          key: string
+          updated_at?: string
+          window_start?: string
+        }
+        Update: {
+          count?: number
+          key?: string
+          updated_at?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -304,6 +385,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      bump_rate_limit: {
+        Args: { p_key: string; p_max: number; p_window_minutes: number }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
