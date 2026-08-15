@@ -22,7 +22,7 @@ type CartCtx = {
   setQty: (id: string, qty: number) => void;
   remove: (id: string) => void;
   clear: () => void;
-  checkoutUrl: () => string;
+  checkoutUrl: (opts?: { address?: string; fee?: number | null }) => string;
 };
 
 const Ctx = createContext<CartCtx | null>(null);
