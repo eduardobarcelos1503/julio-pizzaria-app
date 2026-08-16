@@ -1,37 +1,36 @@
-import { useState } from "react";
-import { Plus } from "lucide-react";
-import {
-  BEBIDAS,
-  COMBOS,
-  PIZZA_CATEGORIES,
-  formatBRL,
-  type PizzaCategory,
-} from "@/data/menu";
+import { useMemo, useState } from "react";
+import { AlertTriangle, Loader2, Plus } from "lucide-react";
+import { formatBRL, type PizzaCategory } from "@/data/menu";
+import { useMenu } from "@/lib/menu-live";
 import { useCart } from "@/lib/cart";
 import { PizzaBuilder } from "./PizzaBuilder";
 import { cn } from "@/lib/utils";
 
-type TabId = PizzaCategory["id"] | "bebidas" | "combos";
-
-const TABS: { id: TabId; label: string }[] = [
-  ...PIZZA_CATEGORIES.map((c) => ({ id: c.id as TabId, label: c.label })),
-  { id: "bebidas", label: "Bebidas" },
-  { id: "combos", label: "Combos" },
-];
+type TabId = string;
 
 export function MenuSection() {
+  const { data: menu, isLoading, isError } = useMenu();
   const [active, setActive] = useState<TabId>("tradicional");
   const [builderOpen, setBuilderOpen] = useState(false);
   const [builderCategory, setBuilderCategory] =
     useState<PizzaCategory["id"]>("tradicional");
   const { add, setOpen: setCartOpen } = useCart();
 
+  const tabs = useMemo(
+    () => [
+      ...menu.categories.map((c) => ({ id: c.id as TabId, label: c.label })),
+      { id: "bebidas", label: "Bebidas" },
+      { id: "combos", label: "Combos" },
+    ],
+    [menu.categories],
+  );
+
   const openBuilder = (id: PizzaCategory["id"]) => {
     setBuilderCategory(id);
     setBuilderOpen(true);
   };
 
-  const pizzaCategory = PIZZA_CATEGORIES.find((c) => c.id === active);
+  const pizzaCategory = menu.categories.find((c) => c.id === active);
 
   return (
     <section id="cardapio" className="bg-background py-20 lg:py-28">
@@ -49,19 +48,33 @@ export function MenuSection() {
           </p>
         </div>
 
+        <div aria-live="polite">
+          {isLoading && (
+            <p className="mx-auto mt-6 flex w-fit items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" /> Atualizando cardápio e preços...
+            </p>
+          )}
+          {isError && (
+            <p className="mx-auto mt-6 flex w-fit items-center gap-2 rounded-full border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive">
+              <AlertTriangle className="h-4 w-4" /> Preços podem estar desatualizados.
+              Recarregue em instantes.
+            </p>
+          )}
+        </div>
+
         <div
           role="tablist"
           aria-label="Categorias do cardápio"
           className="mx-auto mt-8 flex max-w-full flex-wrap justify-center gap-2"
         >
-          {TABS.map((t) => (
+          {tabs.map((t) => (
             <button
               key={t.id}
               role="tab"
               aria-selected={active === t.id}
               onClick={() => setActive(t.id)}
               className={cn(
-                "rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200",
+                "rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine",
                 active === t.id
                   ? "bg-wine text-wine-foreground shadow-soft"
                   : "border border-border bg-card text-foreground/70 hover:border-wine/30 hover:text-wine",
@@ -114,14 +127,14 @@ export function MenuSection() {
 
                 <button
                   onClick={() => openBuilder(pizzaCategory.id)}
-                  className="mt-6 h-14 w-full rounded-full bg-gradient-ember text-base font-bold text-primary-foreground shadow-soft transition-all hover:shadow-lift"
+                  className="mt-6 h-14 w-full rounded-full bg-gradient-ember text-base font-bold text-primary-foreground shadow-soft transition-all hover:shadow-lift focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
                 >
                   🍕 Montar minha pizza
                 </button>
 
                 <p className="mt-4 text-xs text-muted-foreground">
                   {pizzaCategory.flavors.length} sabores disponíveis · borda recheada
-                  opcional a partir de R$ 10,00
+                  opcional a partir de {formatBRL(menu.bordaPrices.broto)}
                 </p>
               </div>
             </div>
@@ -131,7 +144,7 @@ export function MenuSection() {
                 <button
                   key={fl.id}
                   onClick={() => openBuilder(pizzaCategory.id)}
-                  className="rounded-2xl border border-border bg-card p-4 text-left transition-all hover:-translate-y-0.5 hover:border-wine/30 hover:shadow-soft"
+                  className="rounded-2xl border border-border bg-card p-4 text-left transition-all hover:-translate-y-0.5 hover:border-wine/30 hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
                 >
                   <span className="flex items-center justify-between gap-2">
                     <span className="font-display text-base font-bold text-wine">
@@ -151,7 +164,7 @@ export function MenuSection() {
         {/* BEBIDAS */}
         {active === "bebidas" && (
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {BEBIDAS.map((d) => (
+            {menu.drinks.map((d) => (
               <article
                 key={d.id}
                 className="group flex flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lift"
@@ -175,9 +188,9 @@ export function MenuSection() {
                         add({ name: d.name, details: [], unitPrice: d.price, qty: 1 });
                         setCartOpen(true);
                       }}
-                      className="h-10 rounded-full bg-whatsapp px-4 text-sm font-semibold text-cream shadow-soft"
+                      className="h-11 rounded-full bg-whatsapp px-5 text-sm font-semibold text-cream shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
                     >
-                      Adicionar
+                      Adicionar ao carrinho
                     </button>
                   </div>
                 </div>
@@ -189,7 +202,7 @@ export function MenuSection() {
         {/* COMBOS */}
         {active === "combos" && (
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {COMBOS.map((c) => (
+            {menu.combos.map((c) => (
               <article
                 key={c.id}
                 className="group flex flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lift"
@@ -214,7 +227,13 @@ export function MenuSection() {
                           {formatBRL(c.oldPrice)}
                         </span>
                       )}
-                      {c.price === null ? "Promoção" : formatBRL(c.price)}
+                      {c.price === null ? (
+                        <span className="text-base font-semibold text-muted-foreground">
+                          Consulte no WhatsApp
+                        </span>
+                      ) : (
+                        formatBRL(c.price)
+                      )}
                     </span>
                     <button
                       onClick={() => {
@@ -226,9 +245,9 @@ export function MenuSection() {
                         });
                         setCartOpen(true);
                       }}
-                      className="h-10 rounded-full bg-whatsapp px-4 text-sm font-semibold text-cream shadow-soft"
+                      className="h-11 shrink-0 rounded-full bg-whatsapp px-5 text-sm font-semibold text-cream shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
                     >
-                      Adicionar
+                      Adicionar ao carrinho
                     </button>
                   </div>
                 </div>
@@ -236,10 +255,6 @@ export function MenuSection() {
             ))}
           </div>
         )}
-
-        <p className="mt-8 text-center text-sm text-muted-foreground">
-          Sabores e preços podem ser atualizados em <code>src/data/menu.ts</code>.
-        </p>
       </div>
 
       <PizzaBuilder
