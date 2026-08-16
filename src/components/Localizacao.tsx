@@ -1,8 +1,18 @@
-import { MapPin, Phone, Clock } from "lucide-react";
+import { useEffect, useState } from "react";
+import { MapPin, Phone, Clock, Truck } from "lucide-react";
 import { CtaLink } from "./CtaLink";
-import { BUSINESS } from "@/lib/pizzaria";
+import { BUSINESS, isOpenNow } from "@/lib/pizzaria";
 
 export function Localizacao() {
+  const [openNow, setOpenNow] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const tick = () => setOpenNow(isOpenNow());
+    tick();
+    const id = setInterval(tick, 60_000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <section id="localizacao" className="bg-background py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -39,7 +49,26 @@ export function Localizacao() {
               </li>
               <li className="flex gap-4">
                 <Clock className="mt-0.5 h-6 w-6 shrink-0 text-primary" />
-                <span className="font-semibold text-foreground">{BUSINESS.hours}</span>
+                <span>
+                  <span className="block font-semibold text-foreground">{BUSINESS.hours}</span>
+                  {openNow !== null && (
+                    <span
+                      className={
+                        openNow
+                          ? "mt-1 inline-block rounded-full bg-whatsapp/15 px-3 py-1 text-xs font-bold text-whatsapp"
+                          : "mt-1 inline-block rounded-full bg-muted px-3 py-1 text-xs font-bold text-muted-foreground"
+                      }
+                    >
+                      {openNow
+                        ? `Aberto agora · fecha ${BUSINESS.closeHour}:00`
+                        : `Fechado — abrimos às ${BUSINESS.openHour}:00`}
+                    </span>
+                  )}
+                </span>
+              </li>
+              <li className="flex gap-4">
+                <Truck className="mt-0.5 h-6 w-6 shrink-0 text-primary" />
+                <span className="font-semibold text-foreground">{BUSINESS.deliveryArea}</span>
               </li>
             </ul>
             <CtaLink href={BUSINESS.mapsUrl} variant="ember" size="lg" className="mt-8 w-full">

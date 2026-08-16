@@ -160,12 +160,13 @@ async function fetchMenu(): Promise<MenuData> {
   };
 }
 
-export function useMenu(): MenuData {
-  const { data } = useQuery({
+export function useMenu() {
+  const { data, isLoading, isError, isFetching } = useQuery({
     queryKey: ["menu"],
     queryFn: fetchMenu,
     initialData: STATIC_MENU,
     staleTime: 30_000,
   });
-  return data;
+  return { data, isLoading: isLoading || isFetching, isError };
 }
+

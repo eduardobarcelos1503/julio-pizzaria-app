@@ -73,9 +73,12 @@ export function Header() {
             type="button"
             onClick={() => setCartOpen(true)}
             aria-label={`Abrir carrinho (${count} itens)`}
-            className="relative inline-flex h-10 items-center gap-2 rounded-full border border-cream/25 px-3 text-sm font-semibold text-cream transition-colors hover:bg-cream/10"
+            className="relative inline-flex h-10 items-center gap-2 rounded-full border border-cream/25 px-3 text-sm font-semibold text-cream transition-colors hover:bg-cream/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
           >
             <ShoppingBag className="h-4 w-4" />
+            <span aria-live="polite" className="sr-only">
+              {count === 0 ? "Carrinho vazio" : `${count} itens no carrinho, total ${formatBRL(total)}`}
+            </span>
             {count > 0 && (
               <>
                 <span className="hidden sm:inline">{formatBRL(total)}</span>
