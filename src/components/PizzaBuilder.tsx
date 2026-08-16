@@ -1,12 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Check, Minus, Plus, Search, X } from "lucide-react";
-import {
-  BORDAS,
-  BORDA_PRECO_POR_TAMANHO,
-  PIZZA_CATEGORIES,
-  formatBRL,
-  type PizzaCategory,
-} from "@/data/menu";
+import { formatBRL, type PizzaCategory } from "@/data/menu";
+import { useMenu } from "@/lib/menu-live";
 import { useCart } from "@/lib/cart";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +20,7 @@ type Props = {
 
 export function PizzaBuilder({ open, onOpenChange, initialCategoryId }: Props) {
   const { add, setOpen: setCartOpen } = useCart();
+  const { data: menu } = useMenu();
 
   const [categoryId, setCategoryId] = useState<PizzaCategory["id"]>(
     initialCategoryId ?? "tradicional",
@@ -36,7 +32,8 @@ export function PizzaBuilder({ open, onOpenChange, initialCategoryId }: Props) {
   const [note, setNote] = useState("");
   const [search, setSearch] = useState("");
 
-  const category = PIZZA_CATEGORIES.find((c) => c.id === categoryId)!;
+  const category =
+    menu.categories.find((c) => c.id === categoryId) ?? menu.categories[0]!;
   const size = category.sizes.find((s) => s.id === sizeId) ?? category.sizes[0]!;
 
   // reset ao abrir / trocar categoria
@@ -59,7 +56,17 @@ export function PizzaBuilder({ open, onOpenChange, initialCategoryId }: Props) {
     setFlavors((prev) => prev.slice(0, size.maxFlavors));
   }, [sizeId]);
 
-  const bordaPrice = borda === "sem" ? 0 : BORDA_PRECO_POR_TAMANHO[size.id];
+  const bordaPrice = borda === "sem" ? 0 : (menu.bordaPrices[size.id] ?? 0);
+
+  // Fecha com Escape
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onOpenChange(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onOpenChange]);
 
   const basePrice = useMemo(() => {
     if (category.priceByFlavorCount) {
@@ -100,7 +107,7 @@ export function PizzaBuilder({ open, onOpenChange, initialCategoryId }: Props) {
   const flavorNames = flavors.map(
     (id) => category.flavors.find((fl) => fl.id === id)?.name ?? id,
   );
-  const bordaName = BORDAS.find((b) => b.id === borda)!.name;
+  const bordaName = menu.bordas.find((b) => b.id === borda)?.name ?? "Sem borda recheada";
 
   const handleAdd = () => {
     if (flavors.length === 0) return;
@@ -144,7 +151,7 @@ export function PizzaBuilder({ open, onOpenChange, initialCategoryId }: Props) {
           {/* 1. Categoria */}
           <Step n={1} title="Escolha a linha">
             <div className="flex flex-wrap gap-2">
-              {PIZZA_CATEGORIES.map((c) => (
+              {menu.categories.map((c) => (
                 <Chip
                   key={c.id}
                   active={c.id === categoryId}
@@ -213,10 +220,10 @@ export function PizzaBuilder({ open, onOpenChange, initialCategoryId }: Props) {
           {/* 4. Borda */}
           <Step n={4} title="Borda recheada (opcional)">
             <div className="flex flex-wrap gap-2">
-              {BORDAS.map((b) => (
+              {menu.bordas.map((b) => (
                 <Chip key={b.id} active={b.id === borda} onClick={() => setBorda(b.id)}>
                   {b.name}
-                  {b.id !== "sem" && ` +${formatBRL(BORDA_PRECO_POR_TAMANHO[size.id])}`}
+                  {b.id !== "sem" && ` +${formatBRL(menu.bordaPrices[size.id] ?? 0)}`}
                 </Chip>
               ))}
             </div>
@@ -286,7 +293,7 @@ function Chip({
     <button
       onClick={onClick}
       className={cn(
-        "rounded-full px-4 py-2 text-sm font-semibold transition-all",
+        "rounded-full px-4 py-2 text-sm font-semibold transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine",
         active
           ? "bg-wine text-wine-foreground shadow-soft"
           : "border border-border bg-background text-foreground/70 hover:border-wine/30 hover:text-wine",
