@@ -9,7 +9,11 @@ export const BUSINESS = {
   city: "São José dos Pinhais",
   state: "PR",
   zip: "83065-020",
-  hours: "Aberto até 23:00",
+  hours: "Todos os dias, 18:00 às 23:00",
+  /** Horário de funcionamento (24h) — confirmar com o dono se há dia de fechamento. */
+  openHour: 18,
+  closeHour: 23,
+  deliveryArea: "Entregamos em São José dos Pinhais e região — tempo médio de 30 a 50 min",
   rating: "4,9",
   reviews: 62,
   priceRange: "R$ 20–40 por pessoa",
@@ -26,3 +30,9 @@ export function whatsappLink(message: string) {
 export const WA_GENERAL = whatsappLink(
   "Olá! Vim pelo site e gostaria de fazer um pedido na Julio Pizzaria.",
 );
+
+/** Status ao vivo do funcionamento (usar apenas no cliente, após hidratação). */
+export function isOpenNow(now: Date = new Date()): boolean {
+  const h = now.getHours() + now.getMinutes() / 60;
+  return h >= BUSINESS.openHour && h < BUSINESS.closeHour;
+}
